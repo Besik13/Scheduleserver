@@ -1,4 +1,4 @@
-package scheduleserver;
+package scheduleserver.bins;
 
 import java.util.Map;
 

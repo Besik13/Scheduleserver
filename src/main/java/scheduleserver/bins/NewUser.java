@@ -1,4 +1,4 @@
-package scheduleserver;
+package scheduleserver.bins;
 
 public class NewUser {
     private String email;
