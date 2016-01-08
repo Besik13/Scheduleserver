@@ -3,7 +3,6 @@ package scheduleserver;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.*;
 import scheduleserver.dbserver.ConnectionStart;
@@ -39,23 +38,6 @@ public class Controller {
         return new Login(false);
     }
 
-    @RequestMapping("/groups")
-    public Groups groups() {
-        Map<Integer, String> groups = new HashMap<Integer, String>();
-        query = "select  * from groups";
-        try (Connection conn = ConnectionStart.getConnection();
-             Statement stmt = conn.createStatement())
-        {
-            rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                groups.put(Integer.valueOf(rs.getString("id")), rs.getString("group"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new Groups(groups);
-    }
-
     @RequestMapping(value = "/add_user", method = RequestMethod.POST)
     @ResponseBody
     public NewUser addUser(@RequestBody NewUser user) {
@@ -74,5 +56,49 @@ public class Controller {
             e.printStackTrace();
         }
         return user;
+    }
+
+    @RequestMapping("/info")
+    public InfoFromTable info(@RequestParam(value = "what") String what,
+                              @RequestParam(value = "from") String from,
+                              @RequestParam(value = "where") String where,
+                              @RequestParam(value = "eq",defaultValue = "1") String eq) {
+        Map<Integer, String> info = new HashMap<Integer, String>();
+        query = "select  `id` , `" +
+                what +"` from " +
+                from + " WHERE "+where+"="+eq;
+        try (Connection conn = ConnectionStart.getConnection();
+             Statement stmt = conn.createStatement())
+        {
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                info.put(Integer.valueOf(rs.getString("id")), rs.getString(what));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new InfoFromTable(info);
+    }
+
+    @RequestMapping("/test")
+    public String test(@RequestParam(value = "what", defaultValue = "*") String what,
+                     @RequestParam(value = "from") String from) {
+        Map<Integer, String> info = new HashMap<Integer, String>();
+        query = "select  " +
+                what +" from " +
+                from;
+        try (Connection conn = ConnectionStart.getConnection();
+             Statement stmt = conn.createStatement())
+        {
+            //preparedStatement.setString(1,what);
+            //preparedStatement.setString(2,from);
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                info.put(Integer.valueOf(rs.getString("id")), rs.getString("groups"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return query;
     }
 }
