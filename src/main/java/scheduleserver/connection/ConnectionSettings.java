@@ -1,4 +1,4 @@
-package scheduleserver.dbserver;
+package scheduleserver.connection;
 
 public class ConnectionSettings {
 

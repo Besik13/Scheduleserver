@@ -1,4 +1,4 @@
-package scheduleserver.dbserver;
+package scheduleserver.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
